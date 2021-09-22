@@ -80,4 +80,68 @@ class FluxAndMonoServicesTest {
         Flux<String> transform = fluxAndMonoServices.fruitsFluxTransformDefaultIfEmpty(10);
         StepVerifier.create(transform).expectNext("default").verifyComplete();
     }
+
+    @Test
+    void fruitsFluxTransformSwitchIfEmpty() {
+        Flux<String> transformSwitchIfEmpty = fluxAndMonoServices.fruitsFluxTransformSwitchIfEmpty(8);
+        StepVerifier.create(transformSwitchIfEmpty)
+                .expectNext("Pineapple","Jack Fruit")
+                .verifyComplete();
+    }
+
+    @Test
+    void fruitFluxConcat() {
+        Flux<String> concatFlux = fluxAndMonoServices.fruitFluxConcat();
+        StepVerifier.create(concatFlux)
+                .expectNext("Pineapple", "Orange", "Jack Fruit", "Tomato")
+                .verifyComplete();
+    }
+
+    @Test
+    void fruitFluxConcatWith() {
+        Flux<String> concatFlux = fluxAndMonoServices.fruitFluxConcatWith();
+        StepVerifier.create(concatFlux)
+                .expectNext("Pineapple", "Orange", "Jack Fruit", "Tomato")
+                .verifyComplete();
+    }
+
+    @Test
+    void fruitMonoConcatWith() {
+        Flux<String> concatMono = fluxAndMonoServices.fruitMonoConcatWith();
+        StepVerifier.create(concatMono)
+                .expectNext("Pineapple", "Tomato")
+                .verifyComplete();
+    }
+
+    @Test
+    void givenFluxes_whenCombileLatestIsInvoked_thenCombineLatest() {
+        Flux<Integer> combineLatest = fluxAndMonoServices.givenFluxes_whenCombileLatestIsInvoked_thenCombineLatest();
+
+        StepVerifier.create(combineLatest).expectNextCount(3).verifyComplete();
+    }
+
+    @Test
+    void fruitsFluxMerge() {
+
+        Flux<String> fluxMerge = fluxAndMonoServices.fruitsFluxMerge();
+        StepVerifier.create(fluxMerge)
+                .expectNext("Pineapple","Orange","Jack Fruit", "Tomato")
+                .verifyComplete();
+    }
+
+    @Test
+    void fruitsFluxMergeWith() {
+        Flux<String> fluxMerge = fluxAndMonoServices.fruitsFluxMerge();
+        StepVerifier.create(fluxMerge)
+                .expectNext("Pineapple","Orange","Jack Fruit", "Tomato")
+                .verifyComplete();
+    }
+
+    @Test
+    void fruitsFluxMergeWithSequential() {
+        Flux<String> fluxMerge = fluxAndMonoServices.fruitsFluxMergeWithSequential();
+        StepVerifier.create(fluxMerge)
+                .expectNext("Pineapple","Orange","Jack Fruit", "Tomato")
+                .verifyComplete();
+    }
 }

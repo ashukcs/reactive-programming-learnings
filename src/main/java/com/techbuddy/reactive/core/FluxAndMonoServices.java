@@ -20,6 +20,13 @@ public class FluxAndMonoServices {
                 .log();
     }
 
+    public static void main(String[] args){
+        FluxAndMonoServices fluxAndMonoServices = new FluxAndMonoServices();
+        fluxAndMonoServices.fruitsFlux().subscribe(s -> System.out.println("Flux Item : " + s));
+
+        fluxAndMonoServices.fruitMono().subscribe(s -> System.out.println("Mono Item : " + s));
+    }
+
     public Flux<String> fruitsFluxFilter(int number){
         return Flux.fromIterable(Arrays.asList("Apple", "Orange", "Banana"))
                 .filter(s->s.length()>number)
@@ -74,10 +81,62 @@ public class FluxAndMonoServices {
                 .defaultIfEmpty("default")
                 .log();
     }
-    public static void main(String[] args){
-        FluxAndMonoServices fluxAndMonoServices = new FluxAndMonoServices();
-        fluxAndMonoServices.fruitsFlux().subscribe(s -> System.out.println("Flux Item : " + s));
 
-        fluxAndMonoServices.fruitMono().subscribe(s -> System.out.println("Mono Item : " + s));
+    public Flux<String> fruitsFluxTransformSwitchIfEmpty(int number){
+        Function<Flux<String>,Flux<String>> filterData = data->data.filter(s->s.length()>number);
+        return Flux.fromIterable(Arrays.asList("Apple", "Orange", "Banana"))
+                .transform(filterData)
+                .switchIfEmpty(Flux.just("Pineapple", "Jack Fruit").transform(filterData))
+                .log();
+    }
+
+    public Flux<String> fruitFluxConcat(){
+        Flux<String> fruits = Flux.just("Pineapple", "Orange");
+        Flux<String> veggies = Flux.just("Jack Fruit", "Tomato");
+
+        return Flux.concat(fruits, veggies).log();
+    }
+
+    public Flux<String> fruitFluxConcatWith(){
+        Flux<String> fruits = Flux.just("Pineapple", "Orange");
+        Flux<String> veggies = Flux.just("Jack Fruit", "Tomato");
+
+        return fruits.concatWith(veggies);
+    }
+
+    public Flux<String> fruitMonoConcatWith(){
+        Mono<String> fruits = Mono.just("Pineapple");
+        Mono<String> veggies = Mono.just("Tomato");
+
+        return fruits.concatWith(veggies);
+    }
+
+    public Flux<Integer> givenFluxes_whenCombileLatestIsInvoked_thenCombineLatest(){
+        Flux<Integer> evenNumbers = Flux.just(2,4,6);
+        Flux<Integer> oddNumbers = Flux.just(1,3,5);
+
+        return Flux.combineLatest(evenNumbers, oddNumbers, (a,b)->a+b).log();
+
+    }
+
+    public Flux<String> fruitsFluxMerge(){
+        Flux<String> fruits = Flux.just("Pineapple", "Orange");
+        Flux<String> veggies = Flux.just("Jack Fruit", "Tomato");
+
+        return Flux.merge(fruits, veggies).log();
+    }
+
+    public Flux<String> fruitsFluxMergeWith(){
+        Flux<String> fruits = Flux.just("Pineapple", "Orange").delayElements(Duration.ofMillis(50));
+        Flux<String> veggies = Flux.just("Jack Fruit", "Tomato").delayElements(Duration.ofMillis(75));
+
+        return fruits.mergeWith(veggies).log();
+    }
+
+    public Flux<String> fruitsFluxMergeWithSequential(){
+        Flux<String> fruits = Flux.just("Pineapple", "Orange").delayElements(Duration.ofMillis(50));
+        Flux<String> veggies = Flux.just("Jack Fruit", "Tomato").delayElements(Duration.ofMillis(75));
+
+        return Flux.mergeSequential(fruits,veggies).log();
     }
 }
