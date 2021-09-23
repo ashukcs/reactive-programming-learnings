@@ -144,4 +144,44 @@ class FluxAndMonoServicesTest {
                 .expectNext("Pineapple","Orange","Jack Fruit", "Tomato")
                 .verifyComplete();
     }
+
+    @Test
+    void fruitsFluxFilterDoOn() {
+        Flux<String> fruitsFluxFilter = fluxAndMonoServices.fruitsFluxFilterDoOn(5);
+        StepVerifier.create(fruitsFluxFilter).expectNext("Orange", "Banana").verifyComplete();
+    }
+
+    @Test
+    void fruitsFluxOnErrorReturn() {
+        Flux<String> fruitsFluxOnErrorReturn = fluxAndMonoServices.fruitsFluxOnErrorReturn().log();
+        StepVerifier.create(fruitsFluxOnErrorReturn).expectNext("Pineapple", "Orange", "Mango").verifyComplete();
+
+    }
+
+    @Test
+    void fruitsFluxOnErrorContinue() {
+        Flux<String> fruitsFluxOnErrorContinue = fluxAndMonoServices.fruitsFluxOnErrorContinue();
+        StepVerifier.create(fruitsFluxOnErrorContinue)
+                .expectNext("PINEAPPLE", "ORANGE", "Mango")
+                .expectError(RuntimeException.class)
+                .verify();
+    }
+
+    @Test
+    void fruitsFluxOnErrorMap() {
+        Flux<String> fruitsFluxOnErrorMap = fluxAndMonoServices.fruitsFluxOnErrorMap();
+        StepVerifier.create(fruitsFluxOnErrorMap)
+                .expectNext("PINEAPPLE")
+                .expectError(IllegalStateException.class)
+                .verify();
+    }
+
+    @Test
+    void fruitsFluxDoOnError() {
+        Flux<String> fruitsFluxDoOnError = fluxAndMonoServices.fruitsFluxDoOnError();
+        StepVerifier.create(fruitsFluxDoOnError)
+                .expectNext("PINEAPPLE")
+                .expectError(RuntimeException.class)
+                .verify();
+    }
 }
