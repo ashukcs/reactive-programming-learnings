@@ -4,6 +4,7 @@ import com.techbuddy.reactive.bookapi.domain.Book;
 import com.techbuddy.reactive.bookapi.domain.BookInfo;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +30,18 @@ class BookServiceTest {
                 })
                 .assertNext(book -> {
                     assertEquals("Book Three", book.getBookInfo().getTitle());
+                    assertEquals(2, book.getReviews().size());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void getBookById() {
+        Mono<Book> books = bookService.getBookById(1).log();
+
+        StepVerifier.create(books)
+                .assertNext(book -> {
+                    assertEquals("Book One", book.getBookInfo().getTitle());
                     assertEquals(2, book.getReviews().size());
                 })
                 .verifyComplete();

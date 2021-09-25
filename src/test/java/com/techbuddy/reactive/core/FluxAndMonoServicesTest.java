@@ -2,8 +2,10 @@ package com.techbuddy.reactive.core;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import reactor.tools.agent.ReactorDebugAgent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -169,6 +171,9 @@ class FluxAndMonoServicesTest {
 
     @Test
     void fruitsFluxOnErrorMap() {
+        //Hooks.onOperatorDebug();
+        ReactorDebugAgent.init();
+        ReactorDebugAgent.processExistingClasses();
         Flux<String> fruitsFluxOnErrorMap = fluxAndMonoServices.fruitsFluxOnErrorMap();
         StepVerifier.create(fruitsFluxOnErrorMap)
                 .expectNext("PINEAPPLE")
